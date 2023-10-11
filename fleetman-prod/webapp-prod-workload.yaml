@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: position-tracker
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release2
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: production-microservice
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp
+
+spec:
+  selector:
+    app: webapp
+
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+
+  type: LoadBalancer
